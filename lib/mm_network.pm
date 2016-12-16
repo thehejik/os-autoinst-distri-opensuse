@@ -155,6 +155,10 @@ sub ip_in_subnet {
     return join '.', ($n1, $n2, $n3, $n4);
 }
 
+sub ip6_in_subnet6 {
+    my ($network, $num) = @_;
+}
+
 sub check_ip_in_subnet {
     my ($network, $ip) = @_;
 
