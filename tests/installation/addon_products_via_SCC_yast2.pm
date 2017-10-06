@@ -37,6 +37,8 @@ sub run {
     send_key 'ret';
     assert_screen 'scc-registration';
     fill_in_registration_data;
+sleep;
+    send_key 'alt-i';  # show BETA repos
     assert_screen 'yast2-control-center';
     send_key 'alt-f4';                   # close yast2 control center
     assert_screen 'generic-desktop';

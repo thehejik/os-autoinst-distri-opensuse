@@ -58,6 +58,10 @@ sub run {
                 send_key "ret";
                 assert_screen "addon-license-beta";
             }
+#            # No beta warning and licence agreement for addons added by URL
+#            elsif (get_var("ADDONURL_$uc_addon") && !get_var("BETA_$uc_addon")) {
+#                #do nothing
+#            }
             else {
                 assert_screen "addon-license-$addon";
             }
