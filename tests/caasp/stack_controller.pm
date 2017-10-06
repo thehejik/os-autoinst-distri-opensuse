@@ -137,7 +137,7 @@ sub initialize {
     save_screenshot;
     send_key "ctrl-l";
     send_key 'super-up';
-    x11_start_program('firefox');
+    x11_start_program('firefox', valid => 0);
 }
 
 sub run {
@@ -165,6 +165,7 @@ sub run {
 
     assert_script_run "kubectl cluster-info";
     assert_script_run "kubectl get nodes";
+ sleep;
 
     # Check cluster size
     # CaaSP 2.0 = %number_of_jobs - minus two (controller & admin) jobs

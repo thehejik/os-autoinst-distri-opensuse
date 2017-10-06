@@ -49,6 +49,17 @@ sub run {
         # Restart network to push hostname to dns
         if (is_caasp('VMX') && get_var('STACK_ROLE')) {
             script_run "systemctl restart network", 60;
+	    # Workaround for bsc#1062717 when hostname -f doest contain any dot (no fqdn entry)
+	    get_var('TEST') =~ /.*-(\w+)$/;
+            my $fake_hostname = $1;
+            script_run "hostnamectl set-hostname $fake_hostname.openqa.test";
+            if (check_var('STACK_ROLE', 'admin')) {
+                script_run "rm /etc/pki/ldap.crt /etc/pki/velum.crt";
+                script_run "systemctl restart admin-node-setup.service";
+	        script_run "docker rm -f \$(docker ps -f \"name=k8s_velum-dashboard\" -q)";
+	        script_run "docker rm -f \$(docker ps -f \"name=k8s_openldap_velum\" -q)";
+            }
+	    # endif for workaround
         }
     }
 }

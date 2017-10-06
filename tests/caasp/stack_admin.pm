@@ -26,7 +26,7 @@ sub workaround_bsc_1030876 {
 sub run {
     # Admin node needs long time to start web interface - bsc#1031682
     # Wait in loop until velum is available until controller node can connect
-    my $timeout   = 240;
+    my $timeout   = 7200;
     my $starttime = time;
     while (script_run 'curl -kLI localhost | grep velum') {
         my $timerun = time - $starttime;
@@ -39,6 +39,7 @@ sub run {
     }
     barrier_wait "VELUM_STARTED";     # Worker installation can start
     workaround_bsc_1030876;           # Workaround for log export from autoyast nodes
+sleep;
     barrier_wait "CNTRL_FINISHED";    # Wait until controller node finishes
 }
 
