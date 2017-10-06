@@ -39,6 +39,7 @@ sub run {
     }
     barrier_wait "VELUM_STARTED";     # Worker installation can start
     workaround_bsc_1030876;           # Workaround for log export from autoyast nodes
+sleep;
     barrier_wait "CNTRL_FINISHED";    # Wait until controller node finishes
 }
 

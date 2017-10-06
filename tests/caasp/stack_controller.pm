@@ -23,15 +23,18 @@ use utils 'assert_screen_with_soft_timeout';
 use lockapi;
 use mmapi;
 
+my $admin_email='admin@suse.com';
+my $admin_password='susetesting';
+
 # Create admin account
 sub velum_signup {
     assert_and_click 'create-an-account';
     assert_screen 'velum-signup';
-    type_string 'email@email.com';
+    type_string $admin_email;
     send_key 'tab';
-    type_string 'password';
+    type_string $admin_password;
     send_key 'tab';
-    type_string 'password';
+    type_string $admin_password;
     save_screenshot;
     send_key 'ret';
 }
@@ -150,18 +153,19 @@ sub run {
     assert_screen 'xterm';
     type_string "export KUBECONFIG=~/Downloads/kubeconfig\n";
 
-    if (check_var('DISTRI', 'caasp') && !check_var('VERSION', '1.0')) {
-        # Add repository and install caasp-cli tool [version >= 2.0]
+    if (check_var('DISTRI', 'caasp') && check_var('VERSION', '2.0')) {
+        # Add repository and install caasp-cli tool
         my $cli_repo = get_required_var("CLI_REPO");
         script_sudo "zypper --non-interactive addrepo $cli_repo";
         script_sudo "zypper --non-interactive --gpg-auto-import-key refresh";
         script_sudo "zypper --non-interactive install caasp-cli";
         # Inject auth info into downloaded kubeconfig by using caasp-cli tool
-        assert_script_run "caasp-cli login -u email\@email.com -p password -s https://master.openqa.test:6443";
-    }
+        assert_script_run "caasp-cli login -u $admin_email -p $admin_password -s https://master.openqa.test:6443 || true";
+ }
 
     assert_script_run "kubectl cluster-info";
     assert_script_run "kubectl get nodes";
+ sleep;
 
     # Check cluster size
     # CaaSP 2.0 = %number_of_jobs - minus two (controller & admin) jobs
