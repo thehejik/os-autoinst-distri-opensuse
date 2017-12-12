@@ -1426,6 +1426,11 @@ elsif (get_var("SYSCONTAINER_IMAGE_TEST")) {
 elsif (get_var("WINDOWS")) {
     loadtest "installation/win10_installation";
 }
+elsif (get_var("PLAYGROUND")) {
+    loadtest "boot/boot_to_desktop";
+    #loadtest "playground/google";
+    loadtest "playground/velum";
+}
 elsif (ssh_key_import) {
     loadtest "boot/boot_to_desktop";
     # setup ssh key, we know what ssh keys we have and can verify if they are imported or not
