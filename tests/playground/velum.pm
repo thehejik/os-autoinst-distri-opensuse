@@ -39,11 +39,9 @@ sub run {
     $driver->send_keys_to_active_element('susetesting');
     $driver->mouse_move_to_location(element => wait_for_xpath("//button[contains(\@class, 'btn')]"));
     $driver->click('LEFT');
-    wait_for_page_to_load;
 
-    print STDOUT $driver->get_title();
+    wait_for_xpath("//footer[\@class='row']");
 
-    save_screenshot;
     $driver->quit();
 }
 

@@ -99,9 +99,9 @@ sub selenium_driver {
       curl -f -v " . autoinst_url . "/data/selenium-server-standalone-3.4.0.jar > selenium-server-standalone-3.4.0.jar
       ");
      type_string("java -jar selenium-server-standalone-3.4.0.jar -port $port -timeout 7200 2>&1 | tee /dev/$serialdev\n");
-     save_screenshot;
+     #save_screenshot;
      wait_serial('Selenium Server is up and running');
-     save_screenshot;
+     #save_screenshot;
 
     # HACK: this connection is only possible because the SUT initiated
     # connection to 10.0.2.2 before (in script_output) so the openvswitch
@@ -131,7 +131,7 @@ sub wait_for {
     diag "waiting for ${type}: ${target}";
     my $i = 0;
     while ($i < $args{-tries}) {
-        save_screenshot;
+        #save_screenshot;
         my $element;
         if ($type eq 'text') {
             return 1 if $driver->get_page_source() =~ /$target/;
