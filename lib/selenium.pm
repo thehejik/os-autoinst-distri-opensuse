@@ -11,11 +11,10 @@
 # Maintainer: Vladimir Nadvornik <nadvornik@suse.com>
 
 package selenium;
-
 use base Exporter;
 use Exporter;
-
 use strict;
+use Data::Dumper;
 
 our @EXPORT = qw(
   add_chromium_repos
@@ -78,23 +77,29 @@ sub enable_selenium_port {
 
 
 my $driver;
+my $sut;
+my $remote_port;
+
 
 sub selenium_driver {
-
     return $driver if $driver;
 
-    #    die "Selenium support works only with openvswitch and tap devices" unless check_var('NICTYPE', 'tap');
-
-    # my @mac_parts = split(':', get_var('NICMAC'));
-    # my $sut = "10.1." . hex($mac_parts[4]) . '.' . hex($mac_parts[5]);
+    if (check_var('NICTYPE', 'tap')) {
+        my @mac_parts = split(':', get_var('NICMAC'));
+        $sut = "10.1." . hex($mac_parts[4]) . '.' . hex($mac_parts[5]);
+	$remote_port = $port;
+    }
+    else { 
+	    $sut = '127.0.0.1';
+	    $remote_port = $port;
+    }
 
      select_console('x11');
 
      x11_start_program('xterm');
      #    become_root;
-     #    my $sut = script_run("hostname -i");
 
-     # selenium-server must by running under unprivileged user because chromedriver/chromium won't start under root
+     # selenium-server must by running under unprivileged user because chromedriver/chromium won't start under root account
      script_output("
       curl -f -v " . autoinst_url . "/data/selenium-server-standalone-3.4.0.jar > selenium-server-standalone-3.4.0.jar
       ");
@@ -106,7 +111,7 @@ sub selenium_driver {
     # HACK: this connection is only possible because the SUT initiated
     # connection to 10.0.2.2 before (in script_output) so the openvswitch
     # routing tables are filled
-    $driver = Selenium::Chrome->new(remote_server_addr => 'localhost', port => $port);
+    $driver = Selenium::Chrome->new(remote_server_addr => $sut, port => $remote_port);
     return $driver;
 }
 

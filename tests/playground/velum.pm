@@ -14,11 +14,13 @@ use base "opensusebasetest";
 use strict;
 use testapi;
 use selenium;
+use Data::Dumper;
 
 use utils 'zypper_call', 'pkcon_quit';
 
 sub run {
-    my $self = shift;
+    my ($self) = @_;
+    print STDERR Dumper $self;
     select_console(get_var('VIRTIO_CONSOLE') ? 'root-virtio-terminal' : 'root-console');
     pkcon_quit();
     add_chromium_repos;
@@ -40,7 +42,8 @@ sub run {
     $driver->mouse_move_to_location(element => wait_for_xpath("//button[contains(\@class, 'btn')]"));
     $driver->click('LEFT');
 
-    wait_for_xpath("//footer[\@class='row']");
+    wait_for_xpath("//footer[\@class='rowXXXXXXX']"); #It shouldnt find that fake class
+    #wait_for_xpath("//footer[\@class='row']");
 
     $driver->quit();
 }
