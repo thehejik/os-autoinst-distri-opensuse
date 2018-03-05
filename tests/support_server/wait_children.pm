@@ -26,11 +26,11 @@ sub run {
     my $self = shift;
 
     # We don't need any logs from support server when running on REMOTE_CONTROLLER for remote SLE installation tests
-    type_string("journalctl -f |tee /dev/$serialdev\n") unless (get_var('REMOTE_CONTROLLER'));
+    type_string("journalctl -f |tee /dev/$serialdev\n") unless (get_var('REMOTE_CONTROLLER') || get_var('PLAYGROUND'));
 
     wait_for_children;
 
-    unless (get_var('REMOTE_CONTROLLER')) {
+    unless (get_var('REMOTE_CONTROLLER') || get_var('PLAYROUND')) {
         send_key("ctrl-c");
 
         my @server_roles = split(',|;', lc(get_var("SUPPORT_SERVER_ROLES")));

@@ -23,6 +23,8 @@ use serial_terminal 'select_virtio_console';
 
 sub run {
     select_virtio_console();
+
+sleep;
 }
 
 sub test_flags {

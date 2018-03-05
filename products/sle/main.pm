@@ -930,6 +930,10 @@ elsif (get_var("SYSCONTAINER_IMAGE_TEST")) {
 elsif (get_var("WINDOWS")) {
     loadtest "installation/win10_installation";
 }
+elsif (get_var('PLAYGROUND')) {
+    loadtest "boot/boot_to_desktop";
+    loadtest "slenkins/login";
+}
 elsif (ssh_key_import) {
     load_ssh_key_import_tests;
 }
