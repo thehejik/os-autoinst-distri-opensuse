@@ -46,6 +46,9 @@ sub run {
     type_string("rcwickedd stop\n");
     configure_hostname(get_var('SLENKINS_NODE'));
 
+    # Wait tell support server it can start
+    barrier_wait 'FOR_CHILDREN';
+
     mutex_lock('dhcp', $control_id);
     mutex_unlock('dhcp');
     configure_dhcp();

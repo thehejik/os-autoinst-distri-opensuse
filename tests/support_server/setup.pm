@@ -473,6 +473,9 @@ sub run {
 
     setup_networks();
 
+    # Wait until all nodes boot
+    barrier_wait 'FOR_CHILDREN';
+
     if (exists $server_roles{pxe}) {
         # PXE server cannot be configured on other ARCH than x86_64
         # because 'syslinux' package only exists on it
