@@ -485,7 +485,7 @@ sub load_applicationstests {
 sub load_slenkins_tests {
     if (get_var("SLENKINS_CONTROL")) {
         my $parents = get_parents;
-        barrier_create 'FOR_CHILDREN', (keys %$parents) + 1;
+        barrier_create 'FOR_CHILDREN', (scalar @$parents) + 1;
 
         unless (get_var("SUPPORT_SERVER")) {
             loadtest "slenkins/login";

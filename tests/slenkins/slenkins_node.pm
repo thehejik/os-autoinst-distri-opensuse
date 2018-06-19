@@ -47,7 +47,7 @@ sub run {
     configure_hostname(get_var('SLENKINS_NODE'));
 
     # Wait tell support server it can start
-    barrier_wait 'FOR_CHILDREN';
+    barrier_wait 'FOR_CHILDREN', $control_id;
 
     mutex_lock('dhcp', $control_id);
     mutex_unlock('dhcp');

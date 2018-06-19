@@ -473,8 +473,10 @@ sub run {
 
     setup_networks();
 
-    # Wait until all nodes boot
-    barrier_wait 'FOR_CHILDREN';
+    # Wait until all SUT nodes boot
+    if (get_var("SLENKINS_CONTROL")) {
+        barrier_wait 'FOR_CHILDREN';
+    }
 
     if (exists $server_roles{pxe}) {
         # PXE server cannot be configured on other ARCH than x86_64
