@@ -33,8 +33,8 @@ sub run {
     my $scc_addons = get_var('SCC_ADDONS', '');
 
     select_console 'root-console';
-    assert_script_run "SUSEConnect --url $scc_url -r $reg_code";
-    assert_script_run 'SUSEConnect --list-extensions';
+    assert_script_run "SUSEConnect --url $scc_url -r $reg_code", timeout => 60 * 5;
+    assert_script_run 'SUSEConnect --list-extensions', timeout => 60 * 5;
 
     # add modules
     if (is_sle '15+') {

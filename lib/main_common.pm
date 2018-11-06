@@ -609,7 +609,7 @@ sub load_system_role_tests {
 }
 sub load_jeos_tests {
     if (get_var('PREPARE_RPI')) {
-        set_var('INSTALLONLY',1);
+        set_var('INSTALLONLY', 1);
         loadtest "boot/boot_to_desktop";
         loadtest "jeos/prepare_rpi_image";
         loadtest "shutdown/shutdown";
@@ -618,15 +618,15 @@ sub load_jeos_tests {
     unless (get_var('LTP_COMMAND_FILE')) {
         load_boot_tests();
         loadtest "jeos/firstrun";
-        loadtest "jeos/record_machine_id";
-        unless (get_var('INSTALL_LTP')) {
-            loadtest "console/force_scheduled_tasks";
-            loadtest "jeos/grub2_gfxmode";
-            loadtest 'jeos/revive_xen_domain' if check_var('VIRSH_VMM_FAMILY', 'xen');
-            loadtest "jeos/diskusage";
-            loadtest "jeos/root_fs_size";
-            loadtest "jeos/mount_by_label";
-        }
+        #loadtest "jeos/record_machine_id";
+        #unless (get_var('INSTALL_LTP')) {
+        #    loadtest "console/force_scheduled_tasks";
+        #    loadtest "jeos/grub2_gfxmode";
+        #    loadtest 'jeos/revive_xen_domain' if check_var('VIRSH_VMM_FAMILY', 'xen');
+        #    loadtest "jeos/diskusage";
+        #    loadtest "jeos/root_fs_size";
+        #    loadtest "jeos/mount_by_label";
+        #}
         if (is_sle) {
             loadtest "console/suseconnect_scc";
         }
@@ -1113,6 +1113,7 @@ sub load_console_server_tests {
 }
 
 sub load_consoletests {
+    return if is_jeos;    # not needed but it will save a time when prepraing image prepare qcow2
     return unless consolestep_is_applicable();
     if (get_var("ADDONS", "") =~ /rt/) {
         loadtest "rt/kmp_modules";

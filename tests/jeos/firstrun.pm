@@ -57,9 +57,11 @@ sub run {
     wait_still_screen;
     send_key_until_needlematch "jeos-system-locale-$lang", $locale_key{$lang}, 50;
     send_key 'ret';
+    sleep 60; 
 
     # Select language
-    send_key_until_needlematch "jeos-keylayout-$lang", $keylayout_key{$lang}, 30;
+    assert_screen "jeos-keylayout-$lang", 30;
+    #send_key_until_needlematch "jeos-keylayout-$lang", $keylayout_key{$lang}, 30;
     send_key 'ret';
 
     # Accept license
@@ -94,7 +96,7 @@ sub run {
     # various disk optimizations and snapshot enablement to land.
     # Meltdown/Spectre mitigations makes this even worse.
     assert_screen_with_soft_timeout('linux-login', timeout => 1000, soft_timeout => 300, bugref => 'bsc#1077007');
-
+sleep 45; 
     select_console('root-console', skip_set_standard_prompt => 1, skip_setterm => 1);
 
     type_string('1234%^&*()qwerty');

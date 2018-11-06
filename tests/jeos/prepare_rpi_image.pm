@@ -8,25 +8,34 @@
 # notice and this notice are preserved.  This file is offered as-is,
 # without any warranty.
 
-# Summary: Dump RPi image to an empty drive to publish
+# Summary: Decompress RPi raw.xz image, resize to 16GB, convert to qcow2 and upload as asset
 # Maintainer: Tomas Hehejik <thehejik@suse.com>
 
 use base "opensusebasetest";
 use strict;
 use testapi;
-use serial_terminal 'select_virtio_console';
-use File::Basename;
+use utils 'zypper_call';
 
 sub run {
-    select_virtio_console();
-    my $version = get_var('VERSION');
-    my $build = get_var('BUILD');
+    my $version       = get_var('VERSION');
+    my $build         = get_var('BUILD');
     my $rpi_image_url = "http://openqa.suse.de/assets/hdd/SLES$version-JeOS.aarch64-15.1-RaspberryPi-Build$build.raw.xz";
-    assert_script_run("time curl -s -O -L $rpi_image_url");
-    # Determine first harddrive without any partition - on aarch64 HDD_2 is detected as vda for some reason
-    my $empty_drive = script_output('lsblk -pdsn -o NAME | grep -v "/dev/[sv]d.[[:digit:]]" | head -n 1');
-    my $rpi_image = basename($rpi_image_url);
-    assert_script_run("time xzcat $rpi_image | dd bs=4M of=$empty_drive iflag=fullblock oflag=direct && sync", 600);
+
+    (my $rpi_image_rawxz = $rpi_image_url) =~ s/.*\///;
+    (my $rpi_image_raw   = $rpi_image_rawxz) =~ s/\.[^.]+$//;
+    (my $rpi_image_qcow2 = $rpi_image_raw) =~ s/\.raw/\.qcow2/;
+
+    select_console('root-console');
+
+    # System should be registered already - we need qemu-img binary
+    zypper_call('in --no-recommends qemu-tools');
+
+    # Download, prepare and upload the image
+    assert_script_run("time curl --fail -s -O -L $rpi_image_url");
+    assert_script_run("time unxz $rpi_image_rawxz",                                            600);
+    assert_script_run("time qemu-img resize -f raw $rpi_image_raw 16G",                        600);
+    assert_script_run("time qemu-img convert -f raw -O qcow2 $rpi_image_raw $rpi_image_qcow2", 600);
+    upload_asset("$rpi_image_qcow2", 1);
 }
 
 1;
